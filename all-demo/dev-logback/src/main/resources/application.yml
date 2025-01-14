@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: dev-logback
+server:
+  port: 10001
+logging:
+  config: classpath:logback.xml
+

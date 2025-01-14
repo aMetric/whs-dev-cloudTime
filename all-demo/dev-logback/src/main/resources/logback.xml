@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <!--定义了一个自定义的转换规则 sensitive，用于处理敏感信息的日志输出-->
+    <conversionRule conversionWord="sensitive" converterClass="com.github.houbb.sensitive.logback.converter.SensitiveLogbackConverter" />
+
+    <springProperty scope="context" name="app.name" source="spring.application.name"/>
+
+    <!--    APP_NAME: 应用名称，取自 Spring 属性。-->
+    <property name="APP_NAME" value="${app.name}"/>
+    <!--    LOG_PATH: 日志文件的存储路径，位于用户主目录下的应用日志文件夹。  -->
+    <property name="LOG_PATH" value="E:/software_cache/project_log/${APP_NAME}"/>
+    <!--    LOG_FILE: 完整的日志文件路径。-->
+    <property name="LOG_FILE" value="${LOG_PATH}/application.log"/>
+    <!--    FILE_LOG_PATTERN: 日志文件的输出格式，包含时间、日志级别、线程、日志记录器和敏感信息。-->
+    <property name="FILE_LOG_PATTERN" value="%d %-5level [%thread %logger - %sensitive%n"/>
+
+    <!--    APPLICATION: 定义了一个滚动文件附加器。-->
+    <appender name="APPLICATION"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_FILE}</file>
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+        </encoder>
+        <!--rollingPolicy: 配置日志文件的滚动策略-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!--定义滚动文件的命名规则-->
+            <fileNamePattern>${LOG_FILE}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!--保留的历史日志文件的最大数量。-->
+            <maxHistory>7</maxHistory>
+            <!--每个日志文件的最大大小。-->
+            <maxFileSize>50MB</maxFileSize>
+            <!--所有日志文件的总大小限制。-->
+            <totalSizeCap>20GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- 定义控制台输出的日志格式和字符集-->
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <!--   输出到日志文件    -->
+        <appender-ref ref="APPLICATION"/>
+        <!--   输出到控制台    -->
+        <!--<appender-ref ref="CONSOLE"/>-->
+    </root>
+</configuration>
